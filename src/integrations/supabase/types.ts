@@ -14,16 +14,253 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chantiers: {
+        Row: {
+          client_nom: string
+          client_tel: string
+          code: string
+          conducteur_nom: string
+          conducteur_tel: string
+          created_at: string
+          date_debut: string | null
+          date_fin_prevue: string | null
+          equipe_id: string | null
+          id: string
+          lieu: string
+          modele: string
+          planning_valide: boolean
+          updated_at: string
+        }
+        Insert: {
+          client_nom?: string
+          client_tel?: string
+          code: string
+          conducteur_nom?: string
+          conducteur_tel?: string
+          created_at?: string
+          date_debut?: string | null
+          date_fin_prevue?: string | null
+          equipe_id?: string | null
+          id?: string
+          lieu?: string
+          modele?: string
+          planning_valide?: boolean
+          updated_at?: string
+        }
+        Update: {
+          client_nom?: string
+          client_tel?: string
+          code?: string
+          conducteur_nom?: string
+          conducteur_tel?: string
+          created_at?: string
+          date_debut?: string | null
+          date_fin_prevue?: string | null
+          equipe_id?: string | null
+          id?: string
+          lieu?: string
+          modele?: string
+          planning_valide?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chantiers_equipe_id_fkey"
+            columns: ["equipe_id"]
+            isOneToOne: false
+            referencedRelation: "equipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comptes_simulation: {
+        Row: {
+          autorisees: number
+          created_at: string
+          email: string
+          id: string
+          nom: string
+          telephone: string
+          token: string
+          utilisees: number
+          ville: string
+        }
+        Insert: {
+          autorisees?: number
+          created_at?: string
+          email?: string
+          id?: string
+          nom: string
+          telephone: string
+          token: string
+          utilisees?: number
+          ville?: string
+        }
+        Update: {
+          autorisees?: number
+          created_at?: string
+          email?: string
+          id?: string
+          nom?: string
+          telephone?: string
+          token?: string
+          utilisees?: number
+          ville?: string
+        }
+        Relationships: []
+      }
+      equipes: {
+        Row: {
+          actif: boolean
+          code: string
+          created_at: string
+          id: string
+          nom: string
+          tel: string
+        }
+        Insert: {
+          actif?: boolean
+          code: string
+          created_at?: string
+          id?: string
+          nom?: string
+          tel?: string
+        }
+        Update: {
+          actif?: boolean
+          code?: string
+          created_at?: string
+          id?: string
+          nom?: string
+          tel?: string
+        }
+        Relationships: []
+      }
+      etapes: {
+        Row: {
+          chantier_id: string
+          date_debut_prevue: string | null
+          date_fin_prevue: string | null
+          date_reelle: string | null
+          detail: string
+          id: string
+          ordre: number
+          poids: number
+          statut: string
+          titre: string
+        }
+        Insert: {
+          chantier_id: string
+          date_debut_prevue?: string | null
+          date_fin_prevue?: string | null
+          date_reelle?: string | null
+          detail?: string
+          id?: string
+          ordre?: number
+          poids?: number
+          statut?: string
+          titre?: string
+        }
+        Update: {
+          chantier_id?: string
+          date_debut_prevue?: string | null
+          date_fin_prevue?: string | null
+          date_reelle?: string | null
+          detail?: string
+          id?: string
+          ordre?: number
+          poids?: number
+          statut?: string
+          titre?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "etapes_chantier_id_fkey"
+            columns: ["chantier_id"]
+            isOneToOne: false
+            referencedRelation: "chantiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journal: {
+        Row: {
+          auteur: string
+          chantier_id: string
+          created_at: string
+          etape_id: string | null
+          id: string
+          photos: string[]
+          texte: string
+        }
+        Insert: {
+          auteur?: string
+          chantier_id: string
+          created_at?: string
+          etape_id?: string | null
+          id?: string
+          photos?: string[]
+          texte?: string
+        }
+        Update: {
+          auteur?: string
+          chantier_id?: string
+          created_at?: string
+          etape_id?: string | null
+          id?: string
+          photos?: string[]
+          texte?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_chantier_id_fkey"
+            columns: ["chantier_id"]
+            isOneToOne: false
+            referencedRelation: "chantiers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_etape_id_fkey"
+            columns: ["etape_id"]
+            isOneToOne: false
+            referencedRelation: "etapes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +387,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
